@@ -4,3 +4,8 @@ server:
 spring:
   application:
     name: matching-service
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest

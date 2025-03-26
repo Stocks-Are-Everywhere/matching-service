@@ -4,6 +4,8 @@ import com.onseju.matchingservice.domain.TradeOrder;
 import com.onseju.matchingservice.dto.MatchedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -17,14 +19,16 @@ public class MatchingEngine {
 
     // 종목 코드를 키로 하는 주문들
     private final ConcurrentHashMap<String, CompanyOrderBook> orderBooks = new ConcurrentHashMap<>();
-    private final ApplicationEventPublisher eventPublisher;
+    private final RabbitTemplate rabbitTemplate;
 
     public void processOrder(final TradeOrder order) {
         final CompanyOrderBook orderBook = getOrCreateOrderBook(order.getCompanyCode());
         checkAndChangeLimitToMarket(order);
         List<MatchedEvent> results = orderBook.received(order);
         results.forEach(i -> log.info("체결 완료: sell order - " + i.sellOrderId() + ", buyOrderId - " + i.buyOrderId()));
-//        results.forEach(eventPublisher::publishEvent);
+        results.forEach(event ->
+            rabbitTemplate.convertAndSend("matched.exchange", "matched.event", event)
+        );
     }
 
     // 종목별 주문장 생성, 이미 존재할 경우 반환
