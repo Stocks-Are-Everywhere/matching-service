@@ -4,3 +4,12 @@ server:
 spring:
   application:
     name: matching-service
+
+  config:
+    import: classpath:/env.properties
+
+  rabbitmq:
+    port: ${RABBITMQ_PORT}
+    host: ${RABBITMQ_HOST}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
