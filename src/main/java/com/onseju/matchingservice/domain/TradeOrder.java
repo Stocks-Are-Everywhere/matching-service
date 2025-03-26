@@ -28,7 +28,7 @@ public class TradeOrder {
 
     private BigDecimal price;
 
-    private LocalDateTime createdDateTime;
+    private Long timestamp;
 
     private Long accountId;
 

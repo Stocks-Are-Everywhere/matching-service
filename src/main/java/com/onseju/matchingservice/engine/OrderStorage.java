@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class OrderStorage {
 
     private final ConcurrentSkipListSet<TradeOrder> elements = new ConcurrentSkipListSet<>(
-            Comparator.comparing(TradeOrder::getCreatedDateTime)
+            Comparator.comparingLong(TradeOrder::getTimestamp)
                     .thenComparing(TradeOrder::getTotalQuantity, Comparator.reverseOrder())
                     .thenComparing(TradeOrder::getId)
     );
@@ -60,22 +61,20 @@ public class OrderStorage {
         final BigDecimal price = getMatchingPrice(incomingOrder, foundOrder);
         if (incomingOrder.isSellType()) {
             return new MatchedEvent(
+                    UUID.randomUUID(),
                     incomingOrder.getCompanyCode(),
                     foundOrder.getId(),
-                    foundOrder.getAccountId(),
                     incomingOrder.getId(),
-                    incomingOrder.getAccountId(),
                     matchedQuantity,
                     price,
                     Instant.now().getEpochSecond()
             );
         }
         return new MatchedEvent(
+                UUID.randomUUID(),
                 incomingOrder.getCompanyCode(),
                 incomingOrder.getId(),
-                incomingOrder.getAccountId(),
                 foundOrder.getId(),
-                foundOrder.getAccountId(),
                 matchedQuantity,
                 price,
                 Instant.now().getEpochSecond()

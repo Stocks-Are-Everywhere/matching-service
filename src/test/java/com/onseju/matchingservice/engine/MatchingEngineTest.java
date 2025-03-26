@@ -3,6 +3,8 @@ package com.onseju.matchingservice.engine;
 import com.onseju.matchingservice.domain.OrderStatus;
 import com.onseju.matchingservice.domain.TradeOrder;
 import com.onseju.matchingservice.domain.Type;
+import com.onseju.matchingservice.producer.MatchingEventProducer;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,11 +28,11 @@ class MatchingEngineTest {
     private MatchingEngine matchingEngine;
 
     @Mock
-    private ApplicationEventPublisher eventPublisher;
+    private MatchingEventProducer matchingEventProducer;
 
     @BeforeEach
     void setUp() {
-        matchingEngine = new MatchingEngine(eventPublisher);
+        matchingEngine = new MatchingEngine(matchingEventProducer);
     }
 
     @Test

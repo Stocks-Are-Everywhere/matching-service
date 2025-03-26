@@ -11,14 +11,14 @@ public class EventMapper {
 
     public TradeOrder toTradeOrder(final OrderedEvent event) {
         return TradeOrder.builder()
-                .id(event.id())
+                .id(event.orderId())
                 .companyCode(event.companyCode())
                 .type(event.type())
                 .status(event.status())
                 .totalQuantity(event.totalQuantity())
                 .remainingQuantity(new AtomicReference<>(event.remainingQuantity()))
                 .price(event.price())
-                .createdDateTime(event.createdDateTime())
+                .timestamp(event.timestamp())
                 .accountId(event.accountId())
                 .build();
     }
