@@ -23,6 +23,7 @@ public class RabbitMQConfig {
 
 	// Queue 정의 - 주문 서비스
 	public static final String ORDER_CREATED_QUEUE = "order.created.queue";
+	public static final String ORDER_MATCHED_QUEUE = "order.matched.queue";
 	public static final String ORDER_BOOK_SYNCED_QUEUE = "order-book.synced.queue";
 
 	// Routing Key 정의
@@ -43,11 +44,32 @@ public class RabbitMQConfig {
 	}
 
 	@Bean
+	public Queue orderMatchedQueue() {
+		return new Queue(ORDER_MATCHED_QUEUE, true);
+	}
+
+	@Bean
 	public Queue orderBookSyncedQueue() {
 		return new Queue(ORDER_BOOK_SYNCED_QUEUE, true);
 	}
 
 	// Bindings - 주문 서비스
+	@Bean
+	public Binding orderCreatedBinding() {
+		return BindingBuilder
+				.bind(orderCreatedQueue())
+				.to(onsejuExchange())
+				.with(ORDER_CREATED_KEY);
+	}
+	
+	@Bean
+	public Binding orderMatchedBinding() {
+		return BindingBuilder
+				.bind(orderMatchedQueue())
+				.to(onsejuExchange())
+				.with(ORDER_MATCHED_KEY);
+	}
+
 	@Bean
 	public Binding orderBookSyncedBinding() {
 		return BindingBuilder
