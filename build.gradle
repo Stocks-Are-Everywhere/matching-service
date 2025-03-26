@@ -24,6 +24,9 @@ repositories {
 }
 
 dependencies {
+    // Spring AMQP (RabbitMQ) : hugh
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
