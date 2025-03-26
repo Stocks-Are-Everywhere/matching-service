@@ -2,7 +2,7 @@ package com.onseju.matchingservice.global.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -25,20 +25,34 @@ public class RabbitMqConfig {
     private String password;
 
     @Bean
-    DirectExchange directExchange() {
-        return new DirectExchange("matched.exchange");
+    FanoutExchange fanoutExchange() {
+        return new FanoutExchange("matched.exchange");
+
     }
 
     @Bean
-    public Queue queue() {
-        return new Queue("matched.queue", false);
+    public Queue orderServiceQueue() {
+        return new Queue("matched.order.queue");
     }
 
     @Bean
-    Binding binding(DirectExchange directExchange, Queue queue) {
-        return BindingBuilder.bind(queue).to(directExchange).with("matched.key");
+    public Queue userServiceQueue() {
+        return new Queue("matched.user.queue");
     }
 
+    @Bean
+    Binding bindingToOrderService(FanoutExchange fanoutExchange, Queue orderServiceQueue) {
+        return BindingBuilder
+                .bind(orderServiceQueue)
+                .to(fanoutExchange);
+    }
+
+    @Bean
+    Binding bindingToUserService(FanoutExchange fanoutExchange, Queue userServiceQueue) {
+        return BindingBuilder
+                .bind(userServiceQueue)
+                .to(fanoutExchange);
+    }
 
     @Bean
     public ConnectionFactory connectionFactory() {

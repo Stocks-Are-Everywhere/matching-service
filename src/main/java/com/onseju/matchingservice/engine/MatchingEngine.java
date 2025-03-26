@@ -25,7 +25,7 @@ public class MatchingEngine {
         List<MatchedEvent> results = orderBook.received(order);
         results.forEach(i -> log.info("체결 완료: sell order - " + i.sellOrderId() + ", buyOrderId - " + i.buyOrderId()));
         results.forEach(result ->
-                rabbitTemplate.convertAndSend("matched.exchange", "matched.key", result));
+                rabbitTemplate.convertAndSend("matched.exchange", "", result));
     }
 
     // 종목별 주문장 생성, 이미 존재할 경우 반환
