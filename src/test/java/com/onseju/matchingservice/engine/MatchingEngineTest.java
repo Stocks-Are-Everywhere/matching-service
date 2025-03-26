@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,11 +26,11 @@ class MatchingEngineTest {
     private MatchingEngine matchingEngine;
 
     @Mock
-    private ApplicationEventPublisher eventPublisher;
+    private RabbitTemplate rabbitTemplate;
 
     @BeforeEach
     void setUp() {
-        matchingEngine = new MatchingEngine(eventPublisher);
+        matchingEngine = new MatchingEngine(rabbitTemplate);
     }
 
     @Test
