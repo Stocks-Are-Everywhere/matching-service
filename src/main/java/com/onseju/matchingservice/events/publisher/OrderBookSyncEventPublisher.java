@@ -2,13 +2,13 @@ package com.onseju.matchingservice.events.publisher;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.onseju.matchingservice.config.RabbitMQConfig;
 import com.onseju.matchingservice.events.MatchedEvent;
+import com.onseju.matchingservice.events.OrderBookSyncedEvent;
 import com.onseju.matchingservice.events.exception.MatchingEventPublisherFailException;
+import com.onseju.matchingservice.events.exception.OrderBookSyncEventPublisherFailException;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,13 +17,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
-public class MatchingEventPublisher extends AbstractEventPublisher<MatchedEvent> {
-    public MatchingEventPublisher(RabbitTemplate rabbitTemplate) {
+public class OrderBookSyncEventPublisher extends AbstractEventPublisher<OrderBookSyncedEvent> {
+    public OrderBookSyncEventPublisher(RabbitTemplate rabbitTemplate) {
         super(rabbitTemplate);
     }
 
 	@Override
-    protected void validateEvent(MatchedEvent event) {
+    protected void validateEvent(OrderBookSyncedEvent event) {
 		//TODO: EVENT ID 추가 후 수정
         // if (event == null || event.id() == null) {
         if (event == null) {
@@ -32,40 +32,22 @@ public class MatchingEventPublisher extends AbstractEventPublisher<MatchedEvent>
     }
 
 	@Override
-    protected void doPublish(MatchedEvent event) {
+    protected void doPublish(OrderBookSyncedEvent event) {
         try {
-            publishAfterMatchingEventToOrderSevice(event);
+            publishOrderBookSyncEventToOrderSevice(event);
             // log.info("체결 이벤트 발행 완료. orderId: {}", event.id());
         } catch (Exception ex) {
             // log.error("체결 이벤트 발행 중 오류 발생. orderId: {}", event.id(), ex);
-            throw new MatchingEventPublisherFailException();
+            throw new OrderBookSyncEventPublisherFailException();
         }
     }
 
-	private void publishAfterMatchingEventToOrderSevice(MatchedEvent event){
+	private void publishOrderBookSyncEventToOrderSevice(OrderBookSyncedEvent event){
 		sendMessage(
 			RabbitMQConfig.ONSEJU_MATCHING_EXCHANGE,
-			RabbitMQConfig.MATCHING_RESULT_KEY,
+			RabbitMQConfig.ORDER_BOOK_SYNCED_KEY,
 			event,
 			""
 		);
 	}
-
-	//
-	// /**
-	//  * 주문 매칭 이벤트 발행
-	//  */
-	// public void publishOrderMatched(final MatchedEvent event) {
-	// 	rabbitTemplate.convertAndSend(
-	// 			RabbitMQConfig.ONSEJU_EXCHANGE, RabbitMQConfig.ORDER_MATCHED_KEY, event);
-	// }
-	//
-	// /**
-	//  * 호가창 이벤트 발행
-	//  */
-	// public void publishOrderBookSynced(final OrderBookSyncedEvent event) {
-	// 	log.info("호가창 이벤트 발행");
-	// 	rabbitTemplate.convertAndSend(
-	// 			RabbitMQConfig.ONSEJU_EXCHANGE, RabbitMQConfig.ORDER_BOOK_SYNCED_KEY, event);
-	// }
 }

@@ -8,7 +8,7 @@ import com.onseju.matchingservice.domain.Type;
 import lombok.Builder;
 
 @Builder
-public record CreatedEvent(
+public record OrderCreatedEvent(
 		Long id,
 		String companyCode,
 		Type type,

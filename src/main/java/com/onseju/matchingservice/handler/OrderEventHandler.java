@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.onseju.matchingservice.domain.TradeOrder;
 import com.onseju.matchingservice.engine.MatchingEngine;
-import com.onseju.matchingservice.events.CreatedEvent;
+import com.onseju.matchingservice.events.OrderCreatedEvent;
 import com.onseju.matchingservice.mapper.EventMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class OrderEventHandler {
 	 */
 	@Async
 	@EventListener
-	public void handleOrderEvent(CreatedEvent orderedEvent) {
+	public void handleOrderEvent(OrderCreatedEvent orderedEvent) {
 		TradeOrder order = eventMapper.toTradeOrder(orderedEvent);
 		matchingEngine.processOrder(order);
 	}

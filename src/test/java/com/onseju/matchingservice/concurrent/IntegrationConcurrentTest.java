@@ -3,6 +3,7 @@ package com.onseju.matchingservice.concurrent;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,7 +119,7 @@ class IntegrationConcurrentTest {
 				.status(OrderStatus.ACTIVE)
 				.totalQuantity(quantity)
 				.remainingQuantity(new AtomicReference<>(quantity))
-				.createdDateTime(LocalDateTime.of(2025, 3, 1, 0, 0, 0))
+				.timestamp(Instant.now().toEpochMilli())
 				.build();
 	}
 

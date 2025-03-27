@@ -3,6 +3,10 @@ package com.onseju.matchingservice.engine;
 import com.onseju.matchingservice.domain.OrderStatus;
 import com.onseju.matchingservice.domain.TradeOrder;
 import com.onseju.matchingservice.domain.Type;
+import com.onseju.matchingservice.events.MatchedEvent;
+import com.onseju.matchingservice.events.OrderBookSyncedEvent;
+import com.onseju.matchingservice.events.publisher.EventPublisher;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -26,11 +31,14 @@ class MatchingEngineTest {
     private MatchingEngine matchingEngine;
 
     @Mock
-    private ApplicationEventPublisher eventPublisher;
+    private EventPublisher<MatchedEvent> matchedEventPublisher;
+
+    @Mock
+    private EventPublisher<OrderBookSyncedEvent> orderBookSyncedEventEventPublisher;
 
     @BeforeEach
     void setUp() {
-        matchingEngine = new MatchingEngine(eventPublisher);
+        matchingEngine = new MatchingEngine(matchedEventPublisher, orderBookSyncedEventEventPublisher);
     }
 
     @Test
@@ -94,7 +102,7 @@ class MatchingEngineTest {
                 .status(OrderStatus.ACTIVE)
                 .totalQuantity(quantity)
                 .remainingQuantity(new AtomicReference<>(quantity))
-                .createdDateTime(LocalDateTime.of(2025, 3, 1, 0, 0, 0))
+                .timestamp(Instant.now().toEpochMilli())
                 .build();
     }
 }
