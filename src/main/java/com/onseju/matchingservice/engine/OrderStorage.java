@@ -67,7 +67,7 @@ public class OrderStorage {
 					incomingOrder.getAccountId(),
 					matchedQuantity,
 					price,
-					Instant.now().getEpochSecond()
+					Instant.now().toEpochMilli()
 			);
 		}
 		return new MatchedEvent(
@@ -78,7 +78,7 @@ public class OrderStorage {
 				foundOrder.getAccountId(),
 				matchedQuantity,
 				price,
-				Instant.now().getEpochSecond()
+				Instant.now().toEpochMilli()
 		);
 	}
 
