@@ -3,6 +3,7 @@ package com.onseju.matchingservice.engine;
 import com.onseju.matchingservice.domain.OrderStatus;
 import com.onseju.matchingservice.domain.TradeOrder;
 import com.onseju.matchingservice.domain.Type;
+import com.onseju.matchingservice.events.publisher.MatchingEventPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,10 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +27,7 @@ class MatchingEngineTest {
     private MatchingEngine matchingEngine;
 
     @Mock
-    private ApplicationEventPublisher eventPublisher;
+    private MatchingEventPublisher eventPublisher;
 
     @BeforeEach
     void setUp() {
@@ -94,7 +95,7 @@ class MatchingEngineTest {
                 .status(OrderStatus.ACTIVE)
                 .totalQuantity(quantity)
                 .remainingQuantity(new AtomicReference<>(quantity))
-                .createdDateTime(LocalDateTime.of(2025, 3, 1, 0, 0, 0))
+                .timestamp(LocalDateTime.of(2025, 3, 1, 0, 0, 0).toEpochSecond(ZoneOffset.UTC))
                 .build();
     }
 }

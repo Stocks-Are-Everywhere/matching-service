@@ -1,22 +1,22 @@
 package com.onseju.matchingservice.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import com.onseju.matchingservice.domain.OrderStatus;
 import com.onseju.matchingservice.domain.Type;
 import com.onseju.matchingservice.engine.MatchingEngine;
 import com.onseju.matchingservice.events.CreatedEvent;
 import com.onseju.matchingservice.handler.OrderEventHandler;
 import com.onseju.matchingservice.mapper.EventMapper;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class OrderedEventHandlerTest {
@@ -42,7 +42,7 @@ class OrderedEventHandlerTest {
 				new BigDecimal(100),
 				new BigDecimal(100),
 				new BigDecimal(100),
-				LocalDateTime.now(),
+				LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
 				1L
 		);
 

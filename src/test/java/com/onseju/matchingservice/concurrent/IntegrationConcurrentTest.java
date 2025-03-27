@@ -1,9 +1,15 @@
 package com.onseju.matchingservice.concurrent;
 
-import static org.assertj.core.api.Assertions.*;
+import com.onseju.matchingservice.domain.OrderStatus;
+import com.onseju.matchingservice.domain.TradeOrder;
+import com.onseju.matchingservice.domain.Type;
+import com.onseju.matchingservice.engine.CompanyOrderBook;
+import com.onseju.matchingservice.events.MatchedEvent;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,13 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.jupiter.api.Test;
-
-import com.onseju.matchingservice.domain.OrderStatus;
-import com.onseju.matchingservice.domain.TradeOrder;
-import com.onseju.matchingservice.domain.Type;
-import com.onseju.matchingservice.engine.CompanyOrderBook;
-import com.onseju.matchingservice.events.MatchedEvent;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class IntegrationConcurrentTest {
 
@@ -118,7 +118,7 @@ class IntegrationConcurrentTest {
 				.status(OrderStatus.ACTIVE)
 				.totalQuantity(quantity)
 				.remainingQuantity(new AtomicReference<>(quantity))
-				.createdDateTime(LocalDateTime.of(2025, 3, 1, 0, 0, 0))
+				.timestamp(LocalDateTime.of(2025, 3, 1, 0, 0, 0).toEpochSecond(ZoneOffset.UTC))
 				.build();
 	}
 

@@ -1,17 +1,15 @@
 package com.onseju.matchingservice.engine;
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.stereotype.Component;
-
 import com.onseju.matchingservice.domain.TradeOrder;
 import com.onseju.matchingservice.events.MatchedEvent;
 import com.onseju.matchingservice.events.OrderBookSyncedEvent;
 import com.onseju.matchingservice.events.publisher.MatchingEventPublisher;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @RequiredArgsConstructor
@@ -56,7 +54,7 @@ public class MatchingEngine {
 	private void updateSellOrderStatusIfBelowMarketPrice(final TradeOrder order) {
 		CompanyOrderBook orderBook = getOrCreateOrderBook(order.getCompanyCode());
 		if (orderBook.isSellOrderBelowMarketPrice(order)) {
-			// order.changeTypeToMarket();
+			 order.changeTypeToMarket();
 		}
 	}
 
@@ -64,7 +62,7 @@ public class MatchingEngine {
 	private void updateBuyOrderStatusIfAboveMarketPrice(final TradeOrder order) {
 		CompanyOrderBook orderBook = getOrCreateOrderBook(order.getCompanyCode());
 		if (orderBook.isBuyOrderAboveMarketPrice(order)) {
-			// order.changeTypeToMarket();
+			 order.changeTypeToMarket();
 		}
 	}
 
