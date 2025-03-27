@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -500,7 +501,7 @@ public class CompanyOrderBookTest {
 				.status(OrderStatus.ACTIVE)
 				.totalQuantity(quantity)
 				.remainingQuantity(new AtomicReference<>(quantity))
-				.timestamp(LocalDateTime.of(2025, 3, 1, 0, 0, 0).toEpochSecond(ZoneOffset.UTC))
+				.timestamp(Instant.now().toEpochMilli())
 				.build();
 	}
 

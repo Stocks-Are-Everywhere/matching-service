@@ -8,8 +8,7 @@ import com.onseju.matchingservice.events.MatchedEvent;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -118,7 +117,7 @@ class IntegrationConcurrentTest {
 				.status(OrderStatus.ACTIVE)
 				.totalQuantity(quantity)
 				.remainingQuantity(new AtomicReference<>(quantity))
-				.timestamp(LocalDateTime.of(2025, 3, 1, 0, 0, 0).toEpochSecond(ZoneOffset.UTC))
+				.timestamp(Instant.now().toEpochMilli())
 				.build();
 	}
 

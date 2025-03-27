@@ -3,7 +3,8 @@ package com.onseju.matchingservice.engine;
 import com.onseju.matchingservice.domain.TradeOrder;
 import com.onseju.matchingservice.events.MatchedEvent;
 import com.onseju.matchingservice.events.OrderBookSyncedEvent;
-import com.onseju.matchingservice.events.publisher.MatchingEventPublisher;
+import com.onseju.matchingservice.events.publisher.EventPublisher;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,8 @@ public class MatchingEngine {
 
 	// 종목 코드를 키로 하는 주문들
 	private final ConcurrentHashMap<String, CompanyOrderBook> orderBooks = new ConcurrentHashMap<>();
-	private final MatchingEventPublisher eventPublisher;
+	private final EventPublisher<MatchedEvent> matchedEventPublisher;
+	private final EventPublisher<OrderBookSyncedEvent> orderBookSyncPublisher;
 
 	public void processOrder(final TradeOrder order) {
 		log.info("매칭 엔진 도착");
@@ -26,7 +28,7 @@ public class MatchingEngine {
 		checkAndChangeLimitToMarket(order);
 		List<MatchedEvent> results = orderBook.received(order);
 		results.forEach(i -> log.info("체결 완료: sell order - " + i.sellOrderId() + ", buyOrderId - " + i.buyOrderId()));
-		results.forEach(eventPublisher::publishOrderMatched);
+		results.forEach(matchedEventPublisher::publishEvent);
 
 		// 주문 체결 후 호가창 동기화 이벤트 발행
 		final String companyCode = order.getCompanyCode();
@@ -71,6 +73,6 @@ public class MatchingEngine {
 	 */
 	private void publishOrderBookSynced(final String companyCode, final CompanyOrderBook orderBook) {
 		final OrderBookSyncedEvent event = orderBook.getOrderBook(companyCode);
-		eventPublisher.publishOrderBookSynced(event);
+		orderBookSyncPublisher.publishEvent(event);
 	}
 }
