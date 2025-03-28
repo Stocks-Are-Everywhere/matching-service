@@ -6,7 +6,6 @@ import com.onseju.matchingservice.domain.Type;
 import com.onseju.matchingservice.events.MatchedEvent;
 import com.onseju.matchingservice.events.OrderBookSyncedEvent;
 import com.onseju.matchingservice.events.publisher.EventPublisher;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,11 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,15 +1,11 @@
 package com.onseju.matchingservice.events.publisher;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import com.onseju.matchingservice.config.RabbitMQConfig;
 import com.onseju.matchingservice.events.MatchedEvent;
 import com.onseju.matchingservice.events.exception.MatchingEventPublisherFailException;
-
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Component;
 
 /**
  * 이벤트 발행 서비스

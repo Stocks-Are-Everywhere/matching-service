@@ -1,29 +1,27 @@
 package com.onseju.matchingservice.service;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import com.onseju.matchingservice.domain.OrderStatus;
 import com.onseju.matchingservice.domain.Type;
 import com.onseju.matchingservice.engine.MatchingEngine;
 import com.onseju.matchingservice.events.OrderCreatedEvent;
 import com.onseju.matchingservice.events.listener.MatchingEventListener;
 import com.onseju.matchingservice.mapper.EventMapper;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class OrderedEventHandlerTest {
 
 	@Autowired
-	MatchingEventListener matchingEventListener;
+    MatchingEventListener matchingEventListener;
 
 	@Autowired
 	EventMapper eventMapper;

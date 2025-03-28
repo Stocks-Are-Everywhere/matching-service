@@ -1,5 +1,8 @@
 package com.onseju.matchingservice.engine;
 
+import com.onseju.matchingservice.domain.TradeOrder;
+import com.onseju.matchingservice.events.MatchedEvent;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -7,9 +10,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
-
-import com.onseju.matchingservice.domain.TradeOrder;
-import com.onseju.matchingservice.events.MatchedEvent;
 
 public class OrderStorage {
 
@@ -47,8 +47,6 @@ public class OrderStorage {
 	) {
 		incomingOrder.decreaseRemainingQuantity(matchedQuantity);
 		foundedOrder.decreaseRemainingQuantity(matchedQuantity);
-		incomingOrder.checkAndChangeOrderStatus();
-		foundedOrder.checkAndChangeOrderStatus();
 	}
 
 	// 매칭 완료 후 응답 생성
