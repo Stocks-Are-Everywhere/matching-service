@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.onseju.matchingservice.config.RabbitMQConfig;
 import com.onseju.matchingservice.domain.TradeOrder;
 import com.onseju.matchingservice.engine.MatchingEngine;
-import com.onseju.matchingservice.events.CreatedEvent;
+import com.onseju.matchingservice.events.OrderCreatedEvent;
 import com.onseju.matchingservice.mapper.EventMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ public class MatchingEventListener {
 	 * 주문 검증 이벤트 처리
 	 * 유저 서비스에서 주문 검증이 완료되면 실제 매칭 프로세스 시작
 	 */
-	@RabbitListener(queues = RabbitMQConfig.ORDER_CREATED_QUEUE)
-	public void handleOrderEvent(CreatedEvent event) {
+	@RabbitListener(queues = RabbitMQConfig.MATCHING_REQUEST_QUEUE)
+	public void handleOrderEvent(OrderCreatedEvent event) {
 		// 주문 생성
 		final TradeOrder order = eventMapper.toTradeOrder(event);
 

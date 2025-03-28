@@ -1,12 +1,12 @@
 package com.onseju.matchingservice.domain;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 @AllArgsConstructor
@@ -44,6 +44,14 @@ public class TradeOrder {
 		remainingQuantity.updateAndGet(before ->
 				before.subtract(quantity).max(BigDecimal.ZERO)
 		);
+		checkAndChangeOrderStatus();
+	}
+
+	// 체결 완료 여부 확인
+	private void checkAndChangeOrderStatus() {
+		if (this.remainingQuantity.get().equals(BigDecimal.ZERO)) {
+			this.status = OrderStatus.COMPLETE;
+		}
 	}
 
 	public boolean isSellType() {
@@ -53,13 +61,6 @@ public class TradeOrder {
 	public BigDecimal calculateMatchQuantity(final TradeOrder other) {
 		long min = Math.min(remainingQuantity.get().longValue(), other.getRemainingQuantity().get().longValue());
 		return new BigDecimal(min);
-	}
-
-	// 체결 완료 여부 확인
-	public void checkAndChangeOrderStatus() {
-		if (this.remainingQuantity.get().equals(BigDecimal.ZERO)) {
-			this.status = OrderStatus.COMPLETE;
-		}
 	}
 
 	public boolean hasRemainingQuantity() {

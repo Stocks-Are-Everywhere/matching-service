@@ -5,14 +5,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.stereotype.Component;
 
 import com.onseju.matchingservice.domain.TradeOrder;
-import com.onseju.matchingservice.events.CreatedEvent;
+import com.onseju.matchingservice.events.OrderCreatedEvent;
 
 @Component
 public class EventMapper {
 
-	public TradeOrder toTradeOrder(final CreatedEvent event) {
+	public TradeOrder toTradeOrder(final OrderCreatedEvent event) {
 		return TradeOrder.builder()
-				.id(event.id())
+				.id(event.orderId())
 				.companyCode(event.companyCode())
 				.type(event.type())
 				.status(event.status())

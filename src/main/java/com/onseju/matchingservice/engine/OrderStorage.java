@@ -1,15 +1,16 @@
 package com.onseju.matchingservice.engine;
 
+import com.onseju.matchingservice.domain.TradeOrder;
+import com.onseju.matchingservice.events.MatchedEvent;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
-
-import com.onseju.matchingservice.domain.TradeOrder;
-import com.onseju.matchingservice.events.MatchedEvent;
 
 public class OrderStorage {
 
@@ -47,8 +48,6 @@ public class OrderStorage {
 	) {
 		incomingOrder.decreaseRemainingQuantity(matchedQuantity);
 		foundedOrder.decreaseRemainingQuantity(matchedQuantity);
-		incomingOrder.checkAndChangeOrderStatus();
-		foundedOrder.checkAndChangeOrderStatus();
 	}
 
 	// 매칭 완료 후 응답 생성
@@ -60,6 +59,7 @@ public class OrderStorage {
 		final BigDecimal price = getMatchingPrice(incomingOrder, foundOrder);
 		if (incomingOrder.isSellType()) {
 			return new MatchedEvent(
+					UUID.randomUUID(),
 					incomingOrder.getCompanyCode(),
 					foundOrder.getId(),
 					foundOrder.getAccountId(),
@@ -67,10 +67,11 @@ public class OrderStorage {
 					incomingOrder.getAccountId(),
 					matchedQuantity,
 					price,
-					Instant.now().getEpochSecond()
+					Instant.now().toEpochMilli()
 			);
 		}
 		return new MatchedEvent(
+				UUID.randomUUID(),
 				incomingOrder.getCompanyCode(),
 				incomingOrder.getId(),
 				incomingOrder.getAccountId(),
@@ -78,7 +79,7 @@ public class OrderStorage {
 				foundOrder.getAccountId(),
 				matchedQuantity,
 				price,
-				Instant.now().getEpochSecond()
+				Instant.now().toEpochMilli()
 		);
 	}
 
