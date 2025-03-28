@@ -12,7 +12,7 @@ public class EventMapper {
 
 	public TradeOrder toTradeOrder(final OrderCreatedEvent event) {
 		return TradeOrder.builder()
-				.id(event.id())
+				.id(event.orderId())
 				.companyCode(event.companyCode())
 				.type(event.type())
 				.status(event.status())

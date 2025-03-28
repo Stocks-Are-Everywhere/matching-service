@@ -20,9 +20,7 @@ public class MatchingEventPublisher extends AbstractEventPublisher<MatchedEvent>
 
 	@Override
     protected void validateEvent(MatchedEvent event) {
-		//TODO: EVENT ID 추가 후 수정
-        // if (event == null || event.id() == null) {
-        if (event == null) {
+        if (event == null || event.id() == null) {
             throw new IllegalArgumentException("Invalid order event");
         }
     }
@@ -31,9 +29,9 @@ public class MatchingEventPublisher extends AbstractEventPublisher<MatchedEvent>
     protected void doPublish(MatchedEvent event) {
         try {
             publishAfterMatchingEventToOrderSevice(event);
-            // log.info("체결 이벤트 발행 완료. orderId: {}", event.id());
+            log.info("체결 완료 이벤트 발행 완료. orderId: {}", event.id());
         } catch (Exception ex) {
-            // log.error("체결 이벤트 발행 중 오류 발생. orderId: {}", event.id(), ex);
+            log.error("체결 완료 이벤트 발행 중 오류 발생. orderId: {}", event.id(), ex);
             throw new MatchingEventPublisherFailException();
         }
     }
@@ -43,25 +41,7 @@ public class MatchingEventPublisher extends AbstractEventPublisher<MatchedEvent>
 			RabbitMQConfig.ONSEJU_MATCHING_EXCHANGE,
 			RabbitMQConfig.MATCHING_RESULT_KEY,
 			event,
-			""
+			"matchingResult - " + event.id()
 		);
 	}
-
-	//
-	// /**
-	//  * 주문 매칭 이벤트 발행
-	//  */
-	// public void publishOrderMatched(final MatchedEvent event) {
-	// 	rabbitTemplate.convertAndSend(
-	// 			RabbitMQConfig.ONSEJU_EXCHANGE, RabbitMQConfig.ORDER_MATCHED_KEY, event);
-	// }
-	//
-	// /**
-	//  * 호가창 이벤트 발행
-	//  */
-	// public void publishOrderBookSynced(final OrderBookSyncedEvent event) {
-	// 	log.info("호가창 이벤트 발행");
-	// 	rabbitTemplate.convertAndSend(
-	// 			RabbitMQConfig.ONSEJU_EXCHANGE, RabbitMQConfig.ORDER_BOOK_SYNCED_KEY, event);
-	// }
 }

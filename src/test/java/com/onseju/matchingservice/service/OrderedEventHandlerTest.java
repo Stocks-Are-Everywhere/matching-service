@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +35,7 @@ class OrderedEventHandlerTest {
 	void handleOrderEventShouldProcessOrder() {
 		// given
 		OrderCreatedEvent orderedEvent = new OrderCreatedEvent(
+				UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479"),
 				1L,
 				"005930",
 				Type.LIMIT_BUY,
