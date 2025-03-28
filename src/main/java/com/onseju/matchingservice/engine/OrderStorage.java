@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class OrderStorage {
@@ -58,6 +59,7 @@ public class OrderStorage {
 		final BigDecimal price = getMatchingPrice(incomingOrder, foundOrder);
 		if (incomingOrder.isSellType()) {
 			return new MatchedEvent(
+					UUID.randomUUID(),
 					incomingOrder.getCompanyCode(),
 					foundOrder.getId(),
 					foundOrder.getAccountId(),
@@ -69,6 +71,7 @@ public class OrderStorage {
 			);
 		}
 		return new MatchedEvent(
+				UUID.randomUUID(),
 				incomingOrder.getCompanyCode(),
 				incomingOrder.getId(),
 				incomingOrder.getAccountId(),

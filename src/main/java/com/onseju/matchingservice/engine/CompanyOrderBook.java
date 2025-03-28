@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -146,7 +147,7 @@ public class CompanyOrderBook {
 		// 상위 10개 매도/매수 호가 추출
 		final List<PriceLevelDto> sellLevels = getTopPriceLevels(sellOrders);
 		final List<PriceLevelDto> buyLevels = getTopPriceLevels(buyOrders);
-		return new OrderBookSyncedEvent(companyCode, sellLevels, buyLevels);
+		return new OrderBookSyncedEvent(UUID.randomUUID(), companyCode, sellLevels, buyLevels);
 	}
 
 	/**
