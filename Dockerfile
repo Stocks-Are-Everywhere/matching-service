@@ -24,4 +24,4 @@ ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=70 -XX:MinRAMPercen
 EXPOSE 8080
 
 # 애플리케이션 실행
-ENTRYPOINT ["java", "$JAVA_OPTS", "-jar", "app.jar"]
+ENTRYPOINT java $JAVA_OPTS -jar app.jar
