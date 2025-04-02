@@ -36,32 +36,46 @@ jobs:
           context: .
           push: true
           tags: platypus3036/matching-service:latest
-      
-      - name: Deploy to EC2 instance
-        uses: appleboy/ssh-action@master
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # 이미지 풀
-            docker pull platypus3036/matching-service:latest
-            
-            # 기존 컨테이너 중지 및 삭제
-            docker stop matching-service || true
-            docker rm matching-service || true
-            
-            # 새 컨테이너 실행
-            docker run -d \
-              --name matching-service \
-              --restart unless-stopped \
-              --memory="3g" \
-              --memory-reservation="2.5g" \
-              --cpus=1.8 \
-              -p ${{ secrets.PORT }}:${{ secrets.PORT }} \
-              -e RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }} \
-              -e RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }} \
-              -e RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }} \
-              -e RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }} \
-              platypus3036/matching-service:latest
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Create env file
+        run: |
+          cat > env-config.sh << 'EOF'
+          cat > /tmp/matching-service.env << 'INNEREOF'
+          RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }}
+          RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }}
+          RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}
+          RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}
+          INNEREOF
+          chmod 600 /tmp/matching-service.env
+          EOF
+          chmod +x env-config.sh
+          
+      - name: Deploy to EC2
+        env:
+          EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+        run: |
+          aws ssm send-command \
+            --instance-ids $EC2_INSTANCE_ID \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands="[
+              \"echo \\\"${{ secrets.DOCKERHUB_TOKEN }}\\\" | docker login -u \\\"${{ secrets.DOCKERHUB_USERNAME }}\\\" --password-stdin\",
+              \"docker pull ${{ secrets.DOCKERHUB_USERNAME }}/matching-service\",
+              \"docker stop matching-service || true\",
+              \"docker rm matching-service || true\",
+              \"$(cat env-config.sh)\",
+              \"docker run -d --name matching-service --restart always -p 8082:8082 --env-file /tmp/matching-service.env ${{ secrets.DOCKERHUB_USERNAME }}/matching-service\",
+              \"docker image prune -af --filter \\\"until=24h\\\"\",
+              \"rm /tmp/matching-service.env\"
+            ]"
+
+      - name: Deployment notification
+        if: success()
+        run: echo "주문 서비스가 성공적으로 배포되었습니다."
             
