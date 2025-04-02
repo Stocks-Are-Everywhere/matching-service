@@ -1,5 +1,10 @@
 package com.onseju.matchingservice.engine;
 
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.stereotype.Component;
+
 import com.onseju.matchingservice.domain.TradeOrder;
 import com.onseju.matchingservice.events.MatchedEvent;
 import com.onseju.matchingservice.events.OrderBookSyncedEvent;
@@ -7,10 +12,6 @@ import com.onseju.matchingservice.events.publisher.EventPublisher;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class MatchingEngine {
 	public void processOrder(final TradeOrder order) {
 		log.info("매칭 엔진 도착");
 		final CompanyOrderBook orderBook = getOrCreateOrderBook(order.getCompanyCode());
-		checkAndChangeLimitToMarket(order);
+		// checkAndChangeLimitToMarket(order);
 		List<MatchedEvent> results = orderBook.received(order);
 		results.forEach(i -> log.info("체결 완료: sell order - " + i.sellOrderId() + ", buyOrderId - " + i.buyOrderId()));
 		results.forEach(matchedEventPublisher::publishEvent);
@@ -56,7 +57,7 @@ public class MatchingEngine {
 	private void updateSellOrderStatusIfBelowMarketPrice(final TradeOrder order) {
 		CompanyOrderBook orderBook = getOrCreateOrderBook(order.getCompanyCode());
 		if (orderBook.isSellOrderBelowMarketPrice(order)) {
-			 order.changeTypeToMarket();
+			order.changeTypeToMarket();
 		}
 	}
 
@@ -64,7 +65,7 @@ public class MatchingEngine {
 	private void updateBuyOrderStatusIfAboveMarketPrice(final TradeOrder order) {
 		CompanyOrderBook orderBook = getOrCreateOrderBook(order.getCompanyCode());
 		if (orderBook.isBuyOrderAboveMarketPrice(order)) {
-			 order.changeTypeToMarket();
+			order.changeTypeToMarket();
 		}
 	}
 
